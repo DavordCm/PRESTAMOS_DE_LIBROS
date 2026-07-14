@@ -152,9 +152,37 @@ def generarReportes(titulosLibros: list, contadorPrestamosLibro: list,
         mostrarInterpretacion(masTitulo, masCantidad, menosTitulo, menosCantidad)
 
 
-def mostrarMenu():
+def pedirTipoUsuario() -> str:
+    print("\n===========================================")
+    print("              INICIO DE SESIÓN")
+    print("===========================================")
+    print("   1. Cliente (alquilar y devolver libros)")
+    print("   2. Gerente (acceso completo)")
+    print("===========================================")
+    opcion:str = input("Elige tu tipo de usuario: ")
+
+    if opcion == "2":
+        return "gerente"
+    else:
+        return "cliente"
+
+
+def mostrarMenuCliente():
     print("\n===========================================")
     print("     GESTIÓN DE PRÉSTAMOS DE LIBROS")
+    print("                (CLIENTE)")
+    print("===========================================")
+    print("   1. Registrar préstamo")
+    print("   2. Registrar devolución")
+    print("   3. Ver libros disponibles")
+    print("   4. Salir")
+    print("===========================================")
+
+
+def mostrarMenuGerente():
+    print("\n===========================================")
+    print("     GESTIÓN DE PRÉSTAMOS DE LIBROS")
+    print("                (GERENTE)")
     print("===========================================")
     print("   1. Registrar préstamo")
     print("   2. Registrar devolución")
@@ -167,7 +195,7 @@ def mostrarMenu():
 
 #VARIABLES
 CANTIDAD_LIBROS:int = 4
-codigosLibros:list = ["L001", "L002", "L003", "L004"]
+codigosLibros:list = ["L01", "L02", "L03", "L04"]
 titulosLibros:list = ["El Principito", "Don Quijote", "Cien años de soledad", "La Odisea"]
 estadosLibros:list = ["disponible", "disponible", "disponible", "disponible"]
 contadorPrestamosLibro:list = [0, 0, 0, 0]
@@ -178,32 +206,58 @@ prestamoCodigos:list = [""] * 100
 totalPrestamosRegistrados:int = 0
 
 # CICLO PRINCIPAL DEL PROGRAMA
-opcion:str = ""
-while opcion != "6":
-    mostrarMenu()
-    opcion = input("Elige una opción: ")
+tipoUsuario:str = pedirTipoUsuario()
 
-    if opcion == "1":
-        exito:int = registrarPrestamo(codigosLibros, titulosLibros, estadosLibros,
-                                       contadorPrestamosLibro, CANTIDAD_LIBROS,
-                                       prestamoUsuarios, prestamoCodigos,
-                                       totalPrestamosRegistrados)
-        totalPrestamosRegistrados = totalPrestamosRegistrados + exito
-    else:
-        if opcion == "2":
-            registrarDevolucion(codigosLibros, titulosLibros, estadosLibros, CANTIDAD_LIBROS)
+if tipoUsuario == "cliente":
+    opcion:str = ""
+    while opcion != "4":
+        mostrarMenuCliente()
+        opcion = input("Elige una opción: ")
+
+        if opcion == "1":
+            exito:int = registrarPrestamo(codigosLibros, titulosLibros, estadosLibros,
+                                           contadorPrestamosLibro, CANTIDAD_LIBROS,
+                                           prestamoUsuarios, prestamoCodigos,
+                                           totalPrestamosRegistrados)
+            totalPrestamosRegistrados = totalPrestamosRegistrados + exito
         else:
-            if opcion == "3":
-                listarLibrosPorEstado(codigosLibros, titulosLibros, estadosLibros, "disponible", CANTIDAD_LIBROS)
+            if opcion == "2":
+                registrarDevolucion(codigosLibros, titulosLibros, estadosLibros, CANTIDAD_LIBROS)
             else:
-                if opcion == "4":
-                    listarLibrosPorEstado(codigosLibros, titulosLibros, estadosLibros, "prestado", CANTIDAD_LIBROS)
+                if opcion == "3":
+                    listarLibrosPorEstado(codigosLibros, titulosLibros, estadosLibros, "disponible", CANTIDAD_LIBROS)
                 else:
-                    if opcion == "5":
-                        generarReportes(titulosLibros, contadorPrestamosLibro,
-                                         CANTIDAD_LIBROS, prestamoUsuarios, totalPrestamosRegistrados)
+                    if opcion == "4":
+                        print("Saliendo del sistema...")
                     else:
-                        if opcion == "6":
-                            print("Saliendo del sistema...")
+                        print("Opción no válida.")
+else:
+    opcion:str = ""
+    while opcion != "6":
+        mostrarMenuGerente()
+        opcion = input("Elige una opción: ")
+
+        if opcion == "1":
+            exito:int = registrarPrestamo(codigosLibros, titulosLibros, estadosLibros,
+                                           contadorPrestamosLibro, CANTIDAD_LIBROS,
+                                           prestamoUsuarios, prestamoCodigos,
+                                           totalPrestamosRegistrados)
+            totalPrestamosRegistrados = totalPrestamosRegistrados + exito
+        else:
+            if opcion == "2":
+                registrarDevolucion(codigosLibros, titulosLibros, estadosLibros, CANTIDAD_LIBROS)
+            else:
+                if opcion == "3":
+                    listarLibrosPorEstado(codigosLibros, titulosLibros, estadosLibros, "disponible", CANTIDAD_LIBROS)
+                else:
+                    if opcion == "4":
+                        listarLibrosPorEstado(codigosLibros, titulosLibros, estadosLibros, "prestado", CANTIDAD_LIBROS)
+                    else:
+                        if opcion == "5":
+                            generarReportes(titulosLibros, contadorPrestamosLibro,
+                                             CANTIDAD_LIBROS, prestamoUsuarios, totalPrestamosRegistrados)
                         else:
-                            print("Opción no válida.")
+                            if opcion == "6":
+                                print("Saliendo del sistema...")
+                            else:
+                                print("Opción no válida.")
