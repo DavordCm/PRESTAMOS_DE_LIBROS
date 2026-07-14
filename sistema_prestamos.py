@@ -158,6 +158,7 @@ def pedirTipoUsuario() -> str:
     print("===========================================")
     print("   1. Cliente (alquilar y devolver libros)")
     print("   2. Gerente (acceso completo)")
+    print("   3. Registrar usuario")
     print("===========================================")
     opcion:str = input("Elige tu tipo de usuario: ")
 
