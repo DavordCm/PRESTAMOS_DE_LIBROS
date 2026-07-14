@@ -17,6 +17,7 @@ def buscarUsuario(usuariosUnicos: list, usuario: str, cantidadUsuariosUnicos: in
 def registrarPrestamo(codigosLibros: list, titulosLibros: list, estadosLibros: list,
                        contadorPrestamosLibro: list, cantidadLibros: int,
                        prestamoUsuarios: list, prestamoCodigos: list,
+                       usuarioActualLibro: list, dniActualLibro: list, telefonoActualLibro: list,
                        totalPrestamosRegistrados: int) -> int:
     codigo:str = input("Código del libro: ")
     posicion:int = buscarLibroPorCodigo(codigosLibros, codigo, cantidadLibros)
@@ -30,17 +31,24 @@ def registrarPrestamo(codigosLibros: list, titulosLibros: list, estadosLibros: l
             return 0
         else:
             usuario:str = input("Nombre del usuario: ")
+            dni:str = input("DNI del usuario: ")
+            telefono:str = input("Teléfono del usuario: ")
 
             estadosLibros[posicion] = "prestado"
             contadorPrestamosLibro[posicion] = contadorPrestamosLibro[posicion] + 1
             prestamoUsuarios[totalPrestamosRegistrados] = usuario
             prestamoCodigos[totalPrestamosRegistrados] = codigo
+            usuarioActualLibro[posicion] = usuario
+            dniActualLibro[posicion] = dni
+            telefonoActualLibro[posicion] = telefono
 
             print(f"Préstamo registrado: '{titulosLibros[posicion]}' para {usuario}.")
             return 1
 
 
-def registrarDevolucion(codigosLibros: list, titulosLibros: list, estadosLibros: list, cantidadLibros: int):
+def registrarDevolucion(codigosLibros: list, titulosLibros: list, estadosLibros: list,
+                         usuarioActualLibro: list, dniActualLibro: list, telefonoActualLibro: list,
+                         cantidadLibros: int):
     codigo:str = input("Código del libro a devolver: ")
     posicion:int = buscarLibroPorCodigo(codigosLibros, codigo, cantidadLibros)
 
@@ -51,6 +59,9 @@ def registrarDevolucion(codigosLibros: list, titulosLibros: list, estadosLibros:
             print("Ese libro no tiene un préstamo activo.")
         else:
             estadosLibros[posicion] = "disponible"
+            usuarioActualLibro[posicion] = ""
+            dniActualLibro[posicion] = ""
+            telefonoActualLibro[posicion] = ""
             print(f"Devolución registrada: '{titulosLibros[posicion]}'.")
 
 
@@ -64,6 +75,19 @@ def listarLibrosPorEstado(codigosLibros: list, titulosLibros: list, estadosLibro
 
     if encontrados == 0:
         print("No hay libros en ese estado.")
+
+
+def listarLibrosPrestados(codigosLibros: list, titulosLibros: list, estadosLibros: list,
+                           usuarioActualLibro: list, dniActualLibro: list, telefonoActualLibro: list,
+                           cantidadLibros: int):
+    encontrados:int = 0
+    for i in range(cantidadLibros):
+        if estadosLibros[i] == "prestado":
+            print(f"- {codigosLibros[i]} | {titulosLibros[i]} | Usuario: {usuarioActualLibro[i]} | DNI: {dniActualLibro[i]} | Tel: {telefonoActualLibro[i]}")
+            encontrados = encontrados + 1
+
+    if encontrados == 0:
+        print("No hay libros prestados actualmente.")
 
 
 #Suma los préstamos de los libros y devuelve el total
@@ -206,6 +230,11 @@ prestamoUsuarios:list = [""] * 100
 prestamoCodigos:list = [""] * 100
 totalPrestamosRegistrados:int = 0
 
+# Datos del usuario que tiene actualmente cada libro (mismo índice que codigosLibros)
+usuarioActualLibro:list = [""] * CANTIDAD_LIBROS
+dniActualLibro:list = [""] * CANTIDAD_LIBROS
+telefonoActualLibro:list = [""] * CANTIDAD_LIBROS
+
 # CICLO PRINCIPAL DEL PROGRAMA
 tipoUsuario:str = pedirTipoUsuario()
 
@@ -219,11 +248,14 @@ if tipoUsuario == "cliente":
             exito:int = registrarPrestamo(codigosLibros, titulosLibros, estadosLibros,
                                            contadorPrestamosLibro, CANTIDAD_LIBROS,
                                            prestamoUsuarios, prestamoCodigos,
+                                           usuarioActualLibro, dniActualLibro, telefonoActualLibro,
                                            totalPrestamosRegistrados)
             totalPrestamosRegistrados = totalPrestamosRegistrados + exito
         else:
             if opcion == "2":
-                registrarDevolucion(codigosLibros, titulosLibros, estadosLibros, CANTIDAD_LIBROS)
+                registrarDevolucion(codigosLibros, titulosLibros, estadosLibros,
+                                     usuarioActualLibro, dniActualLibro, telefonoActualLibro,
+                                     CANTIDAD_LIBROS)
             else:
                 if opcion == "3":
                     listarLibrosPorEstado(codigosLibros, titulosLibros, estadosLibros, "disponible", CANTIDAD_LIBROS)
@@ -242,17 +274,22 @@ else:
             exito:int = registrarPrestamo(codigosLibros, titulosLibros, estadosLibros,
                                            contadorPrestamosLibro, CANTIDAD_LIBROS,
                                            prestamoUsuarios, prestamoCodigos,
+                                           usuarioActualLibro, dniActualLibro, telefonoActualLibro,
                                            totalPrestamosRegistrados)
             totalPrestamosRegistrados = totalPrestamosRegistrados + exito
         else:
             if opcion == "2":
-                registrarDevolucion(codigosLibros, titulosLibros, estadosLibros, CANTIDAD_LIBROS)
+                registrarDevolucion(codigosLibros, titulosLibros, estadosLibros,
+                                     usuarioActualLibro, dniActualLibro, telefonoActualLibro,
+                                     CANTIDAD_LIBROS)
             else:
                 if opcion == "3":
                     listarLibrosPorEstado(codigosLibros, titulosLibros, estadosLibros, "disponible", CANTIDAD_LIBROS)
                 else:
                     if opcion == "4":
-                        listarLibrosPorEstado(codigosLibros, titulosLibros, estadosLibros, "prestado", CANTIDAD_LIBROS)
+                        listarLibrosPrestados(codigosLibros, titulosLibros, estadosLibros,
+                                               usuarioActualLibro, dniActualLibro, telefonoActualLibro,
+                                               CANTIDAD_LIBROS)
                     else:
                         if opcion == "5":
                             generarReportes(titulosLibros, contadorPrestamosLibro,
