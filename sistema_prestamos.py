@@ -219,6 +219,7 @@ def mostrarMenuGerente():
 
 
 #VARIABLES
+#Mini BD
 CANTIDAD_LIBROS:int = 4
 codigosLibros:list = ["L01", "L02", "L03", "L04"]
 titulosLibros:list = ["El Principito", "Don Quijote", "Cien años de soledad", "La Odisea"]
